@@ -7,18 +7,18 @@ package simx.components.physics.jbullet.ontology
 
 package object types{
   def init(){}
-	object Acceleration extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.acceleration definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physiscs/SimxPhysics.owl#Acceleration")
+	object Acceleration extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.acceleration definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Acceleration")
 	
-	object Gravity extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.gravity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physiscs/SimxPhysics.owl#Gravity")
+	object Gravity extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.gravity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Gravity")
 	
 	object HalfExtends extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.halfExtends definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#HalfExtends")
 	
-	object Impulse extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.impulse definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physiscs/SimxPhysics.owl#Impulse")
+	object Impulse extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.impulse definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Impulse")
 	
 	object Normal extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.normal definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Normal")
 	
 	object Transformation extends simx.core.ontology.SVarDescription(simx.core.ontology.types.Transformation as simx.core.ontology.Symbols.transformation withType classOf[com.bulletphysics.linearmath.Transform] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#Transformation")
 	
 	object Vector3 extends simx.core.ontology.SVarDescription(simx.core.ontology.types.Vector3 as simx.core.ontology.Symbols.vector3 withType classOf[javax.vecmath.Vector3f] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Vector3")
-	object Velocity extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.velocity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physiscs/SimxPhysics.owl#Velocity")
+	object Velocity extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.velocity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Velocity")
 }

@@ -140,7 +140,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
   /**
    * Stores held JBulletRigidBodies and thier original mass.
    */
-  private val heldRigidBodies = mutable.Map[JBulletRigidBody, Float]()
+  private var heldRigidBodiess = mutable.Map[JBulletRigidBody, Float]()
 
   /**
    * Stores the simulation speed multipier
@@ -192,8 +192,8 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
 
   private def holdEntity(e : Entity, success : Boolean => Any = b => {}){
     execOnRigidBody(e) { rb =>
-      if (!heldRigidBodies.contains(rb)) {
-        heldRigidBodies += rb -> rb.getInvMass
+      if (!heldRigidBodiess.contains(rb)) {
+        heldRigidBodiess += rb -> rb.getInvMass
         rb.setMassProps(0, new Vector3f(0, 0, 0))
         success(true)
       } else
@@ -203,7 +203,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
 
   private def releaseEntity(e : Entity, success : Boolean => Any = b => {}){
     execOnRigidBody(e) { rb =>
-      success apply heldRigidBodies.get(rb).collect {
+      success apply heldRigidBodiess.get(rb).collect {
         case inverseMass =>
           if (inverseMass == 0f) {
             rb.setMassProps(0, new Vector3f(0, 0, 0))
@@ -215,7 +215,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
             rb.setMassProps(mass, tempVec)
             rb.activate(true)
           }
-          heldRigidBodies.remove(rb)
+          heldRigidBodiess.remove(rb)
           true
       }.getOrElse(false)
     }
