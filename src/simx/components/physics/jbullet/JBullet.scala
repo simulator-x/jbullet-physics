@@ -25,7 +25,6 @@ import scala.collection.immutable
 
 import simx.core.entity.description._
 import simx.core.entity.typeconversion.ConvertibleTrait
-import simx.core.svaractor.SVarActor
 import simx.core.helper.SVarUpdateFunctionMap
 
 import simx.core.worldinterface.eventhandling._
@@ -45,27 +44,62 @@ import simx.core.components.physics.PhysicsConfiguration
 import scala.Some
 import simx.core.components.physics.PhysicsException
 import simx.core.entity.description.NamedSValSet
+import simplex3d.math.float.ConstVec3
 
 //Helps shortening the javax and jbullet.linearmath code
-import simx.components.physics.jbullet.{JBulletMath => m, types => lt}
+import simx.components.physics.jbullet.{JBulletMath => m}
+import simx.components.physics.jbullet.ontology.{types => lt}
 //Global Types
 import simx.core.ontology.{types => gt}
 //Local Types
+
+/**
+ *
+ * @param name            The name to register the component with.
+ * @param simulationSpeed A multiplier to deltaT. If this value is greater than 1.0f the simulation runs faster and vice versa.
+ * @param gravity         The global gravity of the simulation.
+ * @param maxNrOfObjects  The maximum number of simulated objects
+ * @param nrOfSubSteps    Number of sub steps maximally made by the engine in one step
+ * @param fixedTimeStep   The size of one sub step in seconds (see http://www.bulletphysics.org/mediawiki-1.5.8/index.php/Stepping_The_World)
+ */
+case class JBulletComponentAspect(
+                                   name : Symbol,
+                                   gravity: ConstVec3,
+                                   simulationSpeed: Float = 1.0f,
+                                   maxNrOfObjects: Int = 1000,
+                                   nrOfSubSteps: Int = 1000,
+                                   fixedTimeStep: Float = 1.0f / (60.0f * 8.0f)
+                                   ) extends PhysicsComponentAspect[JBulletComponent](name, Seq[Any](maxNrOfObjects, nrOfSubSteps, fixedTimeStep))
+{
+  def getComponentFeatures: Set[ConvertibleTrait[_]] = Set(gt.Gravity, gt.SimulationSpeed)
+  def getCreateParams: NamedSValSet = NamedSValSet(aspectType, gt.Gravity(gravity), gt.SimulationSpeed(simulationSpeed))
+}
 
 /**
  * A component implementation for the the JBullet physics engine.
  *
  * @param componentName   The name to register the component with.
  * @param maxNrOfObjects  The maximum number of simulated objects
- * @param nrOfSubsteps    Number of substeps maximally made by the engine in one step
- * @param fixedTimeStep   The size of one substep in seconds (see http://www.bulletphysics.org/mediawiki-1.5.8/index.php/Stepping_The_World)
+ * @param nrOfSubSteps    Number of sub steps maximally made by the engine in one step
+ * @param fixedTimeStep   The size of one sub step in seconds (see http://www.bulletphysics.org/mediawiki-1.5.8/index.php/Stepping_The_World)
  */
 class JBulletComponent( override val componentName : Symbol = JBullet.getComponentName, maxNrOfObjects: Int = 1000,
-                        nrOfSubsteps: Int = 1000, fixedTimeStep: Float = 1.0f / (60.0f * 8.0f))
-  extends SVarActor with PhysicsComponent with SVarUpdateFunctionMap with EntityConfigLayer {
+                        nrOfSubSteps: Int = 1000, fixedTimeStep: Float = 1.0f / (60.0f * 8.0f))
+  extends PhysicsComponent(componentName) with SVarUpdateFunctionMap with EntityConfigLayer {
 
   def this(componentName: Symbol) = this( componentName, 1000, 1000, 1.0f / (60.0f * 8.0f) )
   def this() = this( JBullet.getComponentName, 1000, 1000, 1.0f / (60.0f * 8.0f) )
+
+
+  protected def requestInitialConfigValues(toProvide: Set[ConvertibleTrait[_]], aspect: EntityAspect, e: Entity) = {
+    configure(aspect.getCreateParams)
+    aspect.getCreateParams.combineWithValues(toProvide)._1
+  }
+
+  protected def finalizeConfiguration(e: Entity){
+    e.observe(lt.Gravity).first( discreteDynWorld.setGravity _ )
+    e.observe(gt.SimulationSpeed).first( value => simulationSpeed = value )
+  }
 
   //
   //  Init
@@ -118,29 +152,13 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    */
   ignoredWriters = immutable.Set(self)
 
-  //
-  //Init End
-  //
-
-  //
-  //  Register convertibles
-  //
-  registerConvertibleHint(lt.Transformation)
-  registerConvertibleHint(lt.Vector3)
-  registerConvertibleHint(lt.Velocity)
-  registerConvertibleHint(lt.Gravity)
-  registerConvertibleHint(gt.SimulationSpeed)
-  //
-  //  Register convertibles End
-  //
-
   //register converters
   JBulletConverters.register()
 
   //
   //  Register events
   //
-  provideEvent( PhysicsEvents.collision )
+  //provideEvent( PhysicsEvents.collision )
   requestEvent( PhysicsEvents.impulse )
   requestEvent( PhysicsEvents.torqueImpulse )
   //
@@ -151,17 +169,14 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
   //  Handlers
   //
 
+
+
   /**
    *  Makes a JBulletRigidBody static.
    * @see   JBHold
    */
   addHandler[JBHold]{ msg =>
-    execOnRigidBody(msg.entity){ rb =>
-      if(!heldRigidBodiess.contains(rb)) {
-        heldRigidBodiess += rb -> rb.getInvMass
-        rb.setMassProps(0, new Vector3f(0,0,0))
-      }
-    }
+    holdEntity(msg.entity)
   }
 
   /**
@@ -169,31 +184,62 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    * @see   JBHold, JBRelease
    */
   addHandler[JBRelease]{ msg =>
-    execOnRigidBody(msg.entity){ rb =>
-      heldRigidBodiess.get(rb).collect {
+   releaseEntity(msg.entity)
+  }
+  //
+  //   Handlers End
+  //
+
+  private def holdEntity(e : Entity, success : Boolean => Any = b => {}){
+    execOnRigidBody(e) { rb =>
+      if (!heldRigidBodiess.contains(rb)) {
+        heldRigidBodiess += rb -> rb.getInvMass
+        rb.setMassProps(0, new Vector3f(0, 0, 0))
+        success(true)
+      } else
+        success(false)
+    }
+  }
+
+  private def releaseEntity(e : Entity, success : Boolean => Any = b => {}){
+    execOnRigidBody(e) { rb =>
+      success apply heldRigidBodiess.get(rb).collect {
         case inverseMass =>
-          if(inverseMass == 0f){
-            rb.setMassProps(0, new Vector3f(0,0,0))
+          if (inverseMass == 0f) {
+            rb.setMassProps(0, new Vector3f(0, 0, 0))
           }
           else {
             val mass = 1f / inverseMass
             val tempVec = new Vector3f()
             rb.getCollisionShape.calculateLocalInertia(mass, tempVec)
             rb.setMassProps(mass, tempVec)
+            rb.activate(true)
           }
-
           heldRigidBodiess.remove(rb)
-      }
+          true
+      }.getOrElse(false)
     }
   }
-  //
-  //   Handlers End
-  //
+
+  override protected def disableAspect(asp: EntityAspect, e: Entity, success : Boolean => Any){
+    if (entityMap.contains(e))
+      holdEntity(e, success)
+    else
+      success(false)
+  }
+
+  override protected def enableAspect(asp: EntityAspect, e: Entity, success : Boolean => Any){
+    if (entityMap.contains(e))
+      releaseEntity(e, success)
+    else
+      success(false)
+  }
 
   protected def performSimulationStep() {
     val deltaT = (System.currentTimeMillis() - this.beginOfLastSimulationStep) / 1000f
     rigidBodyMap.keys.foreach(_.simulate(deltaT))
-    discreteDynWorld.stepSimulation(deltaT * simulationSpeed, nrOfSubsteps, fixedTimeStep)
+    discreteDynWorld.stepSimulation(deltaT * simulationSpeed, nrOfSubSteps, fixedTimeStep)
+    handleCollisions()
     updateAllSVars()
     this.simulationCompleted()
   }
@@ -290,10 +336,10 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
     if (!detachedEntities.contains(e))
       execOnRigidBody(e){
         rb =>
-        //Disable simulation
+          //Disable simulation
           discreteDynWorld.removeRigidBody(rb)
           //Disable updates
-          e.getAllSVars.foreach( x => pauseUpdatesFor(x._3) )
+          e.getAllStateParticles.foreach( x => pauseUpdatesFor(x._3) )
           //Store entity
           detachedEntities.add(e)
       }
@@ -308,9 +354,9 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
     if (detachedEntities.contains(e))
       execOnRigidBody(e){
         rb =>
-        //Set position
-          e.get(lt.Transformation).collect {
-            case t => get( t)( (value:Transform) => {
+          //Set position
+          e.getSVars(lt.Transformation).collect {
+            case (_, t) => get( t)( (value:Transform) => {
               //Enable simulation
               discreteDynWorld.addRigidBody(rb)
               //Magic
@@ -322,13 +368,15 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
               rb.setLinearVelocity(m.ZeroVec)
               rb.setAngularVelocity(m.ZeroVec)
               //Enable updates
-              e.getAllSVars.foreach( x => resumeUpdatesFor(x._3) )
+              e.getAllStateParticles.foreach( x => resumeUpdatesFor(x._3) )
               //Update internal data structure
               detachedEntities.remove(e)
             })
           }
       }
   }
+
+  private val observedCollisions = mutable.Set[(CollisionObject, CollisionObject)]()
 
   /**
    *  Used to react on collisions.
@@ -343,9 +391,10 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
         for (j <- 0 until numContacts) {
           val pt = contactManifold.getContactPoint(j)
           if (pt.getDistance < 0.0f) {
-            val rbA = JBulletRigidBody.upcast(contactManifold.getBody0.asInstanceOf[CollisionObject])
-            val rbB = JBulletRigidBody.upcast(contactManifold.getBody1.asInstanceOf[CollisionObject])
-            if(rbA.isActive || rbB.isActive) handleCollision(rbA, rbB)
+            val rbA = contactManifold.getBody0.asInstanceOf[CollisionObject]
+            val rbB = contactManifold.getBody1.asInstanceOf[CollisionObject]
+            if(rbA.isActive || rbB.isActive)
+              observedCollisions.add(rbA -> rbB)
           }
         }
       }
@@ -353,25 +402,27 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
   }
 
   /**
-   *  The reaction on a collision.
+   *  The reaction on all collisions.
    */
-  private def handleCollision(rbA: JBulletRigidBody, rbB: JBulletRigidBody) =
-    rigidBodyMap.get(rbA) collect {
-      case entityA =>
-        rigidBodyMap.get(rbB) collect {
-          case entityB =>
-            emitEvent(PhysicsEvents.collision.createEvent(Set(entityA, entityB)))
+  private def handleCollisions(){
+    observedCollisions.foreach{ collisionTuple =>
+      rigidBodyMap.get(JBulletRigidBody.upcast(collisionTuple._1)).collect{
+        case entity1 => rigidBodyMap.get(JBulletRigidBody.upcast(collisionTuple._2)).collect{
+          case entity2 => PhysicsEvents.collision.emit(Set(entity1, entity2))
         }
+      }
     }
+    observedCollisions.clear()
+  }
 
   /**
    *  Removes an entity from this JBullet component.
    */
   def removeFromLocalRep(e: Entity) {
 
-    e.getAllSVars.foreach{ x =>
-    //Stop observing
-      ignore( x._3 )
+    e.getAllStateParticles.foreach{ x =>
+      //Stop observing
+      x._3.ignore()
       //Remove update function
       removeSVarUpdateFunctions( x._3 )
     }
@@ -419,6 +470,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
     val tcps = new NamedSValSet(aspect.getCreateParams)
 
     val initialValues = tcps.semantics match {
+      case Symbols.component     => tcps
       case Symbols.configuration =>
         tcps.addIfNew(gt.SimulationSpeed(simulationSpeed))
         tcps.addIfNew(lt.Gravity(discreteDynWorld.getGravity))
@@ -466,16 +518,16 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    */
   private def connectSVars(rb: JBulletRigidBody, e: Entity) {
     try {
-      updateSVarUpdateFunctions(e.get(lt.Transformation).head, rb.setGraphicsWorldTransform, rb.getGraphicsWorldTransform.get _)
-      updateSVarUpdateFunctions(e.get(gt.Mass).head, rb.setMass, rb.getMass _)
-      updateSVarUpdateFunctions(e.get(lt.Gravity).head, rb.setGravity, rb.getGravity _)
-      updateSVarUpdateFunctions(e.get(gt.Restitution).head, rb.setRestitution, rb.getRestitution)
-      updateSVarUpdateFunctions(e.get(gt.LinearDamping).head, rb.setLinearDamping, rb.getLinearDamping)
-      updateSVarUpdateFunctions(e.get(gt.AngularDamping).head, rb.setAngularDamping, rb.getAngularDamping)
-      updateSVarUpdateFunctions(e.get(gt.AngularFactor).head, rb.setAngularFactor, rb.getAngularFactor)
+      updateSVarUpdateFunctions(e.getSVars(lt.Transformation).head._2, rb.setGraphicsWorldTransform, rb.getGraphicsWorldTransform.get _)
+      updateSVarUpdateFunctions(e.getSVars(gt.Mass).head._2, rb.setMass, rb.getMass _)
+      updateSVarUpdateFunctions(e.getSVars(lt.Gravity).head._2, rb.setGravity, rb.getGravity _)
+      updateSVarUpdateFunctions(e.getSVars(gt.Restitution).head._2, rb.setRestitution, rb.getRestitution)
+      updateSVarUpdateFunctions(e.getSVars(gt.LinearDamping).head._2, rb.setLinearDamping, rb.getLinearDamping)
+      updateSVarUpdateFunctions(e.getSVars(gt.AngularDamping).head._2, rb.setAngularDamping, rb.getAngularDamping)
+      updateSVarUpdateFunctions(e.getSVars(gt.AngularFactor).head._2, rb.setAngularFactor, rb.getAngularFactor)
 
-      addSVarUpdateFunctions(e.get(lt.Velocity).head, Some((x : Vector3f) => rb.setLinearVelocity(x)), Some(rb.getLinearVelocity _))
-      addSVarUpdateFunctions(e.get(lt.Acceleration).head, Some((x : Vector3f) => rb.setLinearAcceleration(x)), Some(rb.getLinearAcceleration _))
+      addSVarUpdateFunctions(e.getSVars(lt.Velocity).head._2, Some((x : Vector3f) => rb.setLinearVelocity(x)), Some(rb.getLinearVelocity _))
+      addSVarUpdateFunctions(e.getSVars(lt.Acceleration).head._2, Some((x : Vector3f) => rb.setLinearAcceleration(x)), Some(rb.getLinearAcceleration _))
 
     } catch {
       case e: NoSuchElementException => throw PhysicsException("Entity did not contain the assumed SVars.")
@@ -519,12 +571,13 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
     c.getFirstValueFor(gt.SimulationSpeed).collect{case s => simulationSpeed = s}
     c.getFirstValueFor(lt.Gravity).collect{case g => discreteDynWorld.setGravity(g)}
 
-    addSVarUpdateFunctions(e.get(lt.Gravity).head, Some((g: Vector3f) => {discreteDynWorld.setGravity(g)}), None)
-    addSVarUpdateFunctions(e.get(gt.SimulationSpeed).head, Some((s: Float) => {simulationSpeed = s}), None)
+    addSVarUpdateFunctions(e.getSVars(lt.Gravity).head._2, Some((g: Vector3f) => {discreteDynWorld.setGravity(g)}), None)
+    addSVarUpdateFunctions(e.getSVars(gt.SimulationSpeed).head._2, Some((s: Float) => {simulationSpeed = s}), None)
   }
 
   override def entityConfigComplete(e : Entity, aspect : EntityAspect) {
     aspect.getCreateParams.semantics match {
+      case Symbols.component =>
       case Symbols.configuration => createConfigurationEntity(e, aspect.getCreateParams)
       //RigidBody
       case _ => createRigidBodyEntity(e, aspect.getCreateParams)
@@ -532,9 +585,9 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
   }
 
   /**
-   *  Handles incomming events
+   *  Handles incoming events
    */
-  def handleEvent(e: Event) {
+  override def handleEvent(e: Event) {
     //ApplyImpulse
     if (e.name.value.toSymbol == PhysicsEvents.impulse.name.value.toSymbol){
       e.affectedEntities.headOption.collect{ case entity =>

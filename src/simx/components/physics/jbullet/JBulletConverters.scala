@@ -26,7 +26,7 @@ import simx.core.entity.typeconversion.Converter
 
 //Global Types & Local Types
 import simx.core.ontology.{types => gt}
-import simx.components.physics.jbullet.{types => lt}
+import simx.components.physics.jbullet.ontology.{types => lt}
 
 /*
 * Created by IntelliJ IDEA.

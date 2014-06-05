@@ -37,7 +37,7 @@ import simx.core.ontology.{types => gt}
 /**
  *  Used to configure JBullet.
  *
- * @param simulationSpeed A multiplyer to deltaT. If this value is greater than 1.0f the simulation runs faster and vice versa.
+ * @param simulationSpeed A multiplier to deltaT. If this value is greater than 1.0f the simulation runs faster and vice versa.
  * @param gravity         The global gravity of the simulation.
  */
 case class JBulletCreateParameter(simulationSpeed: Either[Float, Null] = null, gravity: ConstVec3f = null,

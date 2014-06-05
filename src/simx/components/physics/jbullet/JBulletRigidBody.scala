@@ -45,7 +45,7 @@ import simx.components.physics.jbullet.{JBulletMath => m}
 //Global Types
 import simx.core.ontology.{types => gt}
 //Local Types
-import simx.components.physics.jbullet.{types => lt}
+import simx.components.physics.jbullet.ontology.{types => lt}
 
 /**
  *    Object for RigidBody creation from TypedCreateParamSets
@@ -134,7 +134,7 @@ object JBulletRigidBody {
       new CapsuleShapeZ(
         tcps.firstValueFor(gt.Radius) * JBulletConverters.scale,
         tcps.firstValueFor(gt.Height) * JBulletConverters.scale)
-    case _ => throw PhysicsException("Unknown enumberation value for Alignment. Please use simx.components.physics.Axis!")
+    case _ => throw PhysicsException("Unknown enumeration value for Alignment. Please use simx.components.physics.Axis!")
   }
 
   /**
@@ -153,7 +153,7 @@ object JBulletRigidBody {
       case simx.core.components.physics.Axis.Z =>
         halfExtends.z = tcps.firstValueFor(gt.Height) * 0.5f * JBulletConverters.scale
         new CylinderShapeZ(halfExtends)
-      case _ => throw PhysicsException("Unknown enumberation value for Alignment. Please use simx.components.physics.Axis!")
+      case _ => throw PhysicsException("Unknown enumeration value for Alignment. Please use simx.components.physics.Axis!")
     }
   }
 
@@ -187,14 +187,14 @@ object JBulletRigidBody {
 
 /**
  *
- *  Enhances jbullets RigidBody with some SIRIS related methodes
+ *  Enhances jbullets RigidBody with some SIRIS related methods
  * @see com.bulletphysics.dynamics.RigidBody
  */
 class JBulletRigidBody(constructionInfo: RigidBodyConstructionInfo) extends RigidBody(constructionInfo) {
 
   /**
    *    Creates a RigidBody from a given shape.
-   * Uses mass = 0 and worldTransform = Idendity
+   * Uses mass = 0 and worldTransform = Identity
    */
   def this (shape: CollisionShape) = this( new RigidBodyConstructionInfo(
         0f, new DefaultMotionState(m.Idendity), shape, m.ZeroVec))
@@ -399,11 +399,11 @@ class JBulletRigidBody(constructionInfo: RigidBodyConstructionInfo) extends Rigi
   /**
    *   Sets the graphics world transform if the underlying MotionState supports it.
    *          The graphics world transform can have an offset to the center of mass and thus to this
-   *          RigidBodys world transform.
+   *          RigidBodies world transform.
    *
-   *  The only implementation of the interface MotionState, that JBullet provieds, is DefaultMotionState.
-   *          DefaultMotionState supports grapics world transfoms that have an offset to the center of mass of the
-   *          rigidbody.
+   *  The only implementation of the interface MotionState, that JBullet provides, is DefaultMotionState.
+   *          DefaultMotionState supports graphics world transforms that have an offset to the center of mass of the
+   *          rigid body.
    */
   def setGraphicsWorldTransform(value: Transform) {
     if(!getMotionState.isInstanceOf[DefaultMotionState]) return
@@ -422,11 +422,11 @@ class JBulletRigidBody(constructionInfo: RigidBodyConstructionInfo) extends Rigi
   /**
    *    Returns the graphics world transform if the underlying MotionState supports it.
    *          The graphics world transform can have an offset to the center of mass and thus to this
-   *          RigidBodys world transform.
+   *          RigidBodies world transform.
    *
-   *  The only implementation of the interface MotionState, that JBullet provieds, is DefaultMotionState.
-   *          DefaultMotionState supports grapics world transfoms that have an offset to the center of mass of the
-   *          rigidbody.
+   *  The only implementation of the interface MotionState, that JBullet provides, is DefaultMotionState.
+   *          DefaultMotionState supports graphics worldtransformss that have an offset to the center of mass of the
+   *          rigid body.
    */
   def getGraphicsWorldTransform : Option[Transform] =
     if(!getMotionState.isInstanceOf[DefaultMotionState]) None
@@ -541,7 +541,7 @@ class JBulletRigidBody(constructionInfo: RigidBodyConstructionInfo) extends Rigi
   }
 
   /**
-   * Converts a vector from the wolrld coordinate system to the rigid bodies local geometric flight system,
+   * Converts a vector from the world coordinate system to the rigid bodies local geometric flight system,
    * where Y is up and Z is the flight direction.
    */
   //private var toGFLocal: (Vec3f) => Vec3f = (in) => in

@@ -35,7 +35,7 @@ import simx.core.components.physics.PhysicsMessage
 case class JBHold(entity: Entity) extends PhysicsMessage
 
 /**
- * Tells JBullet to release a prevously held entity using its stored mass.
+ * Tells JBullet to release a previously held entity using its stored mass.
  */
 case class JBRelease(entity: Entity) extends PhysicsMessage
 

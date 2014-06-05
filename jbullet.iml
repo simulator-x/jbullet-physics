@@ -2,7 +2,9 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="scala" name="Scala">
-      <configuration />
+      <configuration>
+        <option name="languageLevel" value="Scala 2.11" />
+      </configuration>
     </facet>
     <facet type="IvyIDEA" name="IvyIDEA">
       <configuration ivyFile="$MODULE_DIR$/ivy.xml" useProjectSettings="true" useCustomIvySettings="true" ivySettingsFile="" onlyResolveSelectedConfigs="false">
@@ -21,7 +23,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="core" exported="" />
+    <orderEntry type="module" module-name="core" />
     <orderEntry type="library" exported="" name="jBullet" level="project" />
     <orderEntry type="module-library" exported="">
       <library name="IvyIDEA">

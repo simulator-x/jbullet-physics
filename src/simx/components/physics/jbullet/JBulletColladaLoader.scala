@@ -95,7 +95,7 @@ object JBulletColladaLoader {
 
   /**
    *    Returns the RigidBody described in the SValSet.
-   * Loades RigidBodies only once from disc.
+   * Lodes RigidBodies only once from disc.
    */
   def get(tcps: NamedSValSet): JBulletRigidBody = {
 
@@ -147,7 +147,7 @@ object JBulletColladaLoader {
     else {
       rigidBodyNodes.headOption match {
         case Some(node) => node
-        case None => throw PhysicsException("No rigidbody found in collada file '" + fileName + "'.")
+        case None => throw PhysicsException("No rigid body found in collada file '" + fileName + "'.")
       }
     }
 
@@ -173,7 +173,7 @@ object JBulletColladaLoader {
     //Minimal test if data is what i think it is
     val accessorNode = get((sourceNode \ "technique_common" \ "accessor").headOption)
     if( (!accessorNode.attribute("stride").isDefined) || (accessorNode.attribute("stride").get.toString().toInt != 3))
-      throw PhysicsException("Unsupported physical geomety in collada file '" + fileName + "'.")
+      throw PhysicsException("Unsupported physical geometry in collada file '" + fileName + "'.")
     //Minimal test if data is what i think it is END
 
     val floatArrayNode = get((sourceNode \ "float_array").headOption)
@@ -237,25 +237,24 @@ object JBulletColladaLoader {
 //    val rb = if(mass != 0) new JBulletRigidBody(
 //              new RigidBodyConstructionInfo(
 //                  mass,
-//                  new DefaultMotionState(new Transform(IdendityMat), centerOfMassOffset),
+//                  new DefaultMotionState(new Transform(IdentityMat), centerOfMassOffset),
 //                  shape,
 //                  inertia )) else
 //    new JBulletRigidBody(
 //              new RigidBodyConstructionInfo(
 //                  mass,
-//                  new DefaultMotionState(new Transform(IdendityMat), centerOfMassOffset),
+//                  new DefaultMotionState(new Transform(IdentityMat), centerOfMassOffset),
 //                  shape,
 //                  inertia ))
 
     //Set instance material properties if present
     (rbNode \\ "instance_physics_material").headOption match {
-      case Some(node) => {
+      case Some(node) =>
         val instancePhysicsMaterialUrl = (node \ "@url").toString().replaceAll("#", "")
         val physicsMaterialNode = getMaterialNodeById(instancePhysicsMaterialUrl)
         //Set restitution and friction if present
         (physicsMaterialNode \\ "restitution").headOption.collect{case n => rbi.restitution = Some(n.child.head.toString().toFloat)}
         (physicsMaterialNode \\ "static_friction").headOption.collect{case n => rbi.staticFriction = Some(n.child.head.toString().toFloat)}
-      }
       case None => 
     }
 
