@@ -24,7 +24,7 @@ import scala.collection.mutable
 import scala.collection.immutable
 
 import simx.core.entity.description._
-import simx.core.entity.typeconversion.ConvertibleTrait
+import simx.core.entity.typeconversion.{TypeInfo, ConvertibleTrait}
 import simx.core.helper.SVarUpdateFunctionMap
 
 import simx.core.worldinterface.eventhandling._
@@ -41,7 +41,6 @@ import com.bulletphysics.linearmath.Transform
 import simx.core.entity.Entity
 import simx.core.components.physics._
 import simx.core.components.physics.PhysicsConfiguration
-import scala.Some
 import simx.core.components.physics.PhysicsException
 import simx.core.entity.description.NamedSValSet
 import simplex3d.math.float.ConstVec3
@@ -97,8 +96,8 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
   }
 
   protected def finalizeConfiguration(e: Entity){
-    e.observe(lt.Gravity).first( discreteDynWorld.setGravity _ )
-    e.observe(gt.SimulationSpeed).first( value => simulationSpeed = value )
+    e.observe(lt.Gravity).head( discreteDynWorld.setGravity _ )
+    e.observe(gt.SimulationSpeed).head( value => simulationSpeed = value )
   }
 
   //
@@ -140,7 +139,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
   /**
    * Stores held JBulletRigidBodies and thier original mass.
    */
-  private var heldRigidBodiess = mutable.Map[JBulletRigidBody, Float]()
+  private val heldRigidBodies = mutable.Map[JBulletRigidBody, Float]()
 
   /**
    * Stores the simulation speed multipier
@@ -192,8 +191,8 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
 
   private def holdEntity(e : Entity, success : Boolean => Any = b => {}){
     execOnRigidBody(e) { rb =>
-      if (!heldRigidBodiess.contains(rb)) {
-        heldRigidBodiess += rb -> rb.getInvMass
+      if (!heldRigidBodies.contains(rb)) {
+        heldRigidBodies += rb -> rb.getInvMass
         rb.setMassProps(0, new Vector3f(0, 0, 0))
         success(true)
       } else
@@ -203,7 +202,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
 
   private def releaseEntity(e : Entity, success : Boolean => Any = b => {}){
     execOnRigidBody(e) { rb =>
-      success apply heldRigidBodiess.get(rb).collect {
+      success apply heldRigidBodies.get(rb).collect {
         case inverseMass =>
           if (inverseMass == 0f) {
             rb.setMassProps(0, new Vector3f(0, 0, 0))
@@ -215,7 +214,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
             rb.setMassProps(mass, tempVec)
             rb.activate(true)
           }
-          heldRigidBodiess.remove(rb)
+          heldRigidBodies.remove(rb)
           true
       }.getOrElse(false)
     }
@@ -271,7 +270,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleSetTransformation(e: Entity, t: SVal[gt.Transformation.dataType]) {
+  def handleSetTransformation(e: Entity, t: SVal[gt.Transformation.dataType,TypeInfo[gt.Transformation.dataType,gt.Transformation.dataType]]) {
     execOnRigidBody(e){ _.setGraphicsWorldTransform(t.as(lt.Transformation)) }
   }
 
@@ -280,7 +279,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleApplyImpulse(e: Entity, i: SVal[gt.Impulse.dataType]) {
+  def handleApplyImpulse(e: Entity, i: SVal[gt.Impulse.dataType,TypeInfo[gt.Impulse.dataType,gt.Impulse.dataType]]) {
     execOnRigidBody(e){ rb =>
       if (!rb.isActive) rb.activate()
       rb.applyCentralImpulse(i.as(lt.Impulse))
@@ -292,7 +291,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleApplyTorqueImpulse(e: Entity, i: SVal[gt.Impulse.dataType]) {
+  def handleApplyTorqueImpulse(e: Entity, i: SVal[gt.Impulse.dataType,TypeInfo[gt.Impulse.dataType,gt.Impulse.dataType]]) {
     execOnRigidBody(e){ rb =>
       if (!rb.isActive) rb.activate()
       rb.applyTorqueImpulse(i.as(lt.Impulse))
@@ -304,7 +303,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleSetLinearVelocity(e: Entity, v: SVal[gt.Velocity.dataType]) {
+  def handleSetLinearVelocity(e: Entity, v: SVal[gt.Velocity.dataType,TypeInfo[gt.Velocity.dataType,gt.Velocity.dataType]]) {
     execOnRigidBody(e){ _.setLinearVelocity(v.as(lt.Velocity)) }
   }
 
@@ -313,7 +312,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleSetAngularVelocity(e: Entity, v: SVal[gt.Velocity.dataType]) {
+  def handleSetAngularVelocity(e: Entity, v: SVal[gt.Velocity.dataType,TypeInfo[gt.Velocity.dataType,gt.Velocity.dataType]]) {
     execOnRigidBody(e){ _.setAngularVelocity(v.as(lt.Velocity)) }
   }
 
@@ -322,7 +321,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleSetGravity(e: Entity, g: SVal[gt.Gravity.dataType]) {
+  def handleSetGravity(e: Entity, g: SVal[gt.Gravity.dataType,TypeInfo[gt.Gravity.dataType,gt.Gravity.dataType]]) {
     execOnRigidBody(e){ rb =>
       rb.setGravity(g.as(lt.Gravity)) }
   }
@@ -339,7 +338,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
           //Disable simulation
           discreteDynWorld.removeRigidBody(rb)
           //Disable updates
-          e.getAllStateParticles.foreach( x => pauseUpdatesFor(x._3) )
+          e.getAllStateParticles.foreach( x => pauseUpdatesFor(x.svar) )
           //Store entity
           detachedEntities.add(e)
       }
@@ -368,7 +367,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
               rb.setLinearVelocity(m.ZeroVec)
               rb.setAngularVelocity(m.ZeroVec)
               //Enable updates
-              e.getAllStateParticles.foreach( x => resumeUpdatesFor(x._3) )
+              e.getAllStateParticles.foreach( x => resumeUpdatesFor(x.svar) )
               //Update internal data structure
               detachedEntities.remove(e)
             })
@@ -422,9 +421,9 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
 
     e.getAllStateParticles.foreach{ x =>
       //Stop observing
-      x._3.ignore()
+      x.svar.ignore()
       //Remove update function
-      removeSVarUpdateFunctions( x._3 )
+      removeSVarUpdateFunctions( x.svar )
     }
 
     //Remove from local maps and simulation
@@ -435,6 +434,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
         detachedEntities -= e
         discreteDynWorld.removeRigidBody(rb)
     }
+
   }
 
   /**
