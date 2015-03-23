@@ -37,7 +37,6 @@ import simx.core.components.physics.Level
 import simplex3d.math.float._
 import simplex3d.math.float.functions._
 import simx.core.entity.description.NamedSValSet
-import scala.Some
 import simx.core.components.physics.PhysicsException
 
 //Helps shortening the javax and jbullet.linearmath code
@@ -115,6 +114,7 @@ object JBulletRigidBody {
         normal.normalize()
         new StaticPlaneShape(normal, (tcps.firstValueFor(gt.Thickness) / 2f) * JBulletConverters.scale)
       case Symbols.box => new BoxShape(tcps.firstValueFor(lt.HalfExtends))
+      case shape => throw new Exception("Unknown collision shape '" + shape + "'")
     }
   }
 

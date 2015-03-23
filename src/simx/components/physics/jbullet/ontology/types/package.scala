@@ -5,20 +5,48 @@ package simx.components.physics.jbullet.ontology
  * DO NOT EDIT!
  */
 
+import simx.components.physics.jbullet.ontology.functions.Functions
+import simx.core.ontology.types._
+import simx.core.entity.description.SVal
+
 package object types{
   def init(){}
-	object Acceleration extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.acceleration definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Acceleration")
+	object Acceleration extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.acceleration definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Acceleration") {
+		override def apply(value: dataType) = new Acceleration(value)
+	}
+	class Acceleration(private val _value : Acceleration.dataType) extends SVal(_value, Acceleration.valueDescription, Acceleration)
 	
-	object Gravity extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.gravity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Gravity")
+	object Gravity extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.gravity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Gravity") {
+		override def apply(value: dataType) = new Gravity(value)
+	}
+	class Gravity(private val _value : Gravity.dataType) extends SVal(_value, Gravity.valueDescription, Gravity)
 	
-	object HalfExtends extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.halfExtends definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#HalfExtends")
+	object HalfExtends extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.halfExtends definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#HalfExtends") {
+		override def apply(value: dataType) = new HalfExtends(value)
+	}
+	class HalfExtends(private val _value : HalfExtends.dataType) extends SVal(_value, HalfExtends.valueDescription, HalfExtends)
 	
-	object Impulse extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.impulse definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Impulse")
+	object Impulse extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.impulse definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Impulse") {
+		override def apply(value: dataType) = new Impulse(value)
+	}
+	class Impulse(private val _value : Impulse.dataType) extends SVal(_value, Impulse.valueDescription, Impulse)
 	
-	object Normal extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.normal definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Normal")
+	object Normal extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.normal definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Normal") {
+		override def apply(value: dataType) = new Normal(value)
+	}
+	class Normal(private val _value : Normal.dataType) extends SVal(_value, Normal.valueDescription, Normal)
 	
-	object Transformation extends simx.core.ontology.SVarDescription(simx.core.ontology.types.Transformation as simx.core.ontology.Symbols.transformation withType classOf[com.bulletphysics.linearmath.Transform] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#Transformation")
+	object Transformation extends simx.core.ontology.SValDescription(simx.core.ontology.types.Transformation as simx.core.ontology.Symbols.transformation withType classOf[com.bulletphysics.linearmath.Transform] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Transformation") {
+		override def apply(value: dataType) = new Transformation(value)
+	}
+	class Transformation(private val _value : Transformation.dataType) extends SVal(_value, Transformation.valueDescription, Transformation)
 	
-	object Vector3 extends simx.core.ontology.SVarDescription(simx.core.ontology.types.Vector3 as simx.core.ontology.Symbols.vector3 withType classOf[javax.vecmath.Vector3f] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Vector3")
-	object Velocity extends simx.core.ontology.SVarDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.velocity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Velocity")
+	object Vector3 extends simx.core.ontology.SValDescription(simx.core.ontology.types.Vector3 as simx.core.ontology.Symbols.vector3 withType classOf[javax.vecmath.Vector3f] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Vector3") {
+		override def apply(value: dataType) = new Vector3(value)
+	}
+	class Vector3(private val _value : Vector3.dataType) extends SVal(_value, Vector3.valueDescription, Vector3)
+	object Velocity extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.velocity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Velocity") {
+		override def apply(value: dataType) = new Velocity(value)
+	}
+	class Velocity(private val _value : Velocity.dataType) extends SVal(_value, Velocity.valueDescription, Velocity)
 }

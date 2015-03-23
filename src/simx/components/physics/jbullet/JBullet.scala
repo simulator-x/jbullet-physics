@@ -20,6 +20,8 @@
 
 package simx.components.physics.jbullet
 
+import simx.core.svaractor.semantictrait.base.{Thing, Base}
+
 import scala.collection.mutable
 import scala.collection.immutable
 
@@ -27,7 +29,6 @@ import simx.core.entity.description._
 import simx.core.entity.typeconversion.{TypeInfo, ConvertibleTrait}
 import simx.core.helper.SVarUpdateFunctionMap
 
-import simx.core.worldinterface.eventhandling._
 import simx.core.ontology.Symbols
 
 import javax.vecmath.Vector3f
@@ -158,8 +159,28 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
   //  Register events
   //
   //provideEvent( PhysicsEvents.collision )
-  requestEvent( PhysicsEvents.impulse )
-  requestEvent( PhysicsEvents.torqueImpulse )
+  PhysicsEvents.impulse.observe{
+    e =>
+      e.affectedEntities.headOption.collect{ case entity =>
+      execOnRigidBody(entity){ rb =>
+        e.get(lt.Impulse).collect{ case impulse =>
+          if(!rb.isActive) rb.activate()
+          rb.applyCentralImpulse(impulse)
+        }
+      }
+    }
+  }
+
+  PhysicsEvents.torqueImpulse.observe{ e=>
+    e.affectedEntities.headOption.collect{ case entity =>
+      execOnRigidBody(entity){ rb =>
+        e.get(lt.Impulse).collect{ case impulse =>
+          if(!rb.isActive) rb.activate()
+          rb.applyTorqueImpulse(impulse)
+        }
+      }
+    }
+  }
   //
   //  Register events End
   //
@@ -183,7 +204,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    * @see   JBHold, JBRelease
    */
   addHandler[JBRelease]{ msg =>
-   releaseEntity(msg.entity)
+    releaseEntity(msg.entity)
   }
   //
   //   Handlers End
@@ -221,17 +242,11 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
   }
 
   override protected def disableAspect(asp: EntityAspect, e: Entity, success : Boolean => Any){
-    if (entityMap.contains(e))
-      holdEntity(e, success)
-    else
-      success(false)
+    if (entityMap.contains(e)) holdEntity(e, success) else success(false)
   }
 
   override protected def enableAspect(asp: EntityAspect, e: Entity, success : Boolean => Any){
-    if (entityMap.contains(e))
-      releaseEntity(e, success)
-    else
-      success(false)
+    if (entityMap.contains(e)) releaseEntity(e, success) else success(false)
   }
 
   protected def performSimulationStep() {
@@ -270,7 +285,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleSetTransformation(e: Entity, t: SVal[gt.Transformation.dataType,TypeInfo[gt.Transformation.dataType,gt.Transformation.dataType]]) {
+  def handleSetTransformation(e: Entity, t: SVal[gt.Transformation.dataType,TypeInfo[gt.Transformation.dataType,gt.Transformation.dataType],_<:Base, _<:Thing]) {
     execOnRigidBody(e){ _.setGraphicsWorldTransform(t.as(lt.Transformation)) }
   }
 
@@ -279,7 +294,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleApplyImpulse(e: Entity, i: SVal[gt.Impulse.dataType,TypeInfo[gt.Impulse.dataType,gt.Impulse.dataType]]) {
+  def handleApplyImpulse(e: Entity, i: SVal[gt.Impulse.dataType,TypeInfo[gt.Impulse.dataType,gt.Impulse.dataType],_<:Base, _<:Thing]) {
     execOnRigidBody(e){ rb =>
       if (!rb.isActive) rb.activate()
       rb.applyCentralImpulse(i.as(lt.Impulse))
@@ -291,7 +306,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleApplyTorqueImpulse(e: Entity, i: SVal[gt.Impulse.dataType,TypeInfo[gt.Impulse.dataType,gt.Impulse.dataType]]) {
+  def handleApplyTorqueImpulse(e: Entity, i: SVal[gt.Impulse.dataType,TypeInfo[gt.Impulse.dataType,gt.Impulse.dataType],_<:Base, _<:Thing]) {
     execOnRigidBody(e){ rb =>
       if (!rb.isActive) rb.activate()
       rb.applyTorqueImpulse(i.as(lt.Impulse))
@@ -303,7 +318,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleSetLinearVelocity(e: Entity, v: SVal[gt.Velocity.dataType,TypeInfo[gt.Velocity.dataType,gt.Velocity.dataType]]) {
+  def handleSetLinearVelocity(e: Entity, v: SVal[gt.Velocity.dataType,TypeInfo[gt.Velocity.dataType,gt.Velocity.dataType],_<:Base, _<:Thing]) {
     execOnRigidBody(e){ _.setLinearVelocity(v.as(lt.Velocity)) }
   }
 
@@ -312,7 +327,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleSetAngularVelocity(e: Entity, v: SVal[gt.Velocity.dataType,TypeInfo[gt.Velocity.dataType,gt.Velocity.dataType]]) {
+  def handleSetAngularVelocity(e: Entity, v: SVal[gt.Velocity.dataType,TypeInfo[gt.Velocity.dataType,gt.Velocity.dataType],_<:Base, _<:Thing]) {
     execOnRigidBody(e){ _.setAngularVelocity(v.as(lt.Velocity)) }
   }
 
@@ -321,7 +336,7 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *
    * @see PhysicsComponent, PhysicsMessages
    */
-  def handleSetGravity(e: Entity, g: SVal[gt.Gravity.dataType,TypeInfo[gt.Gravity.dataType,gt.Gravity.dataType]]) {
+  def handleSetGravity(e: Entity, g: SVal[gt.Gravity.dataType,TypeInfo[gt.Gravity.dataType,gt.Gravity.dataType],_<:Base, _<:Thing]) {
     execOnRigidBody(e){ rb =>
       rb.setGravity(g.as(lt.Gravity)) }
   }
@@ -584,33 +599,6 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
     }
   }
 
-  /**
-   *  Handles incoming events
-   */
-  override def handleEvent(e: Event) {
-    //ApplyImpulse
-    if (e.name.value.toSymbol == PhysicsEvents.impulse.name.value.toSymbol){
-      e.affectedEntities.headOption.collect{ case entity =>
-        execOnRigidBody(entity){ rb =>
-          e.get(lt.Impulse).collect{ case impulse =>
-            if(!rb.isActive) rb.activate()
-            rb.applyCentralImpulse(impulse)
-          }
-        }
-      }
-    }
-    //ApplyTorqueImpulse
-    if (e.name.value.toSymbol == PhysicsEvents.torqueImpulse.name.value.toSymbol){
-      e.affectedEntities.headOption.collect{ case entity =>
-        execOnRigidBody(entity){ rb =>
-          e.get(lt.Impulse).collect{ case impulse =>
-            if(!rb.isActive) rb.activate()
-            rb.applyTorqueImpulse(impulse)
-          }
-        }
-      }
-    }
-  }
 }
 
 /**
