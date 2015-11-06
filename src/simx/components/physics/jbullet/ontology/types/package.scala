@@ -8,45 +8,102 @@ package simx.components.physics.jbullet.ontology
 import simx.components.physics.jbullet.ontology.functions.Functions
 import simx.core.ontology.types._
 import simx.core.entity.description.SVal
+import simx.core.entity.description.SValHistory
 
 package object types{
   def init(){}
-	object Acceleration extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.acceleration definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Acceleration") {
-		override def apply(value: dataType) = new Acceleration(value)
+	object Acceleration extends simx.core.ontology.SValDescription[javax.vecmath.Vector3f,simplex3d.math.floatx.ConstVec3f,simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.acceleration.SymbolType](simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.acceleration definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Acceleration") with simx.core.ontology.types.SemanticSValType[Acceleration] {
+		override def apply(value: dataType): SemanticSValType = new Acceleration(value, -1L, Nil)
+		override def apply(value: dataType, timestamp : scala.Long): SemanticSValType = new Acceleration(value, timestamp, Nil)
+		override def apply(value: dataType, timestamp : scala.Long, history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) = new AccelerationWithHistory(value, timestamp, history)
 	}
-	class Acceleration(private val _value : Acceleration.dataType) extends SVal(_value, Acceleration.valueDescription, Acceleration)
+	class Acceleration(private val _value : Acceleration.dataType, private val _timestamp: scala.Long, private val _history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends simx.core.entity.description.SVal[javax.vecmath.Vector3f,simx.core.entity.typeconversion.TypeInfo[javax.vecmath.Vector3f,javax.vecmath.Vector3f],simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.acceleration.SymbolType](_value, Acceleration.valueDescription, Acceleration, _timestamp, _history) {
+		def withHistory = new AccelerationWithHistory(value, timestamp, history)
+	}
+	class AccelerationWithHistory(_v: javax.vecmath.Vector3f, _t: scala.Long, _h: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends Acceleration(_v,_t,_h) with SValHistory[javax.vecmath.Vector3f,simx.core.ontology.Symbols.acceleration.SymbolType,Acceleration] {
+		def newNonHistoryInstance(value: javax.vecmath.Vector3f) = Acceleration(value)
+	}
 	
-	object Gravity extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.gravity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Gravity") {
-		override def apply(value: dataType) = new Gravity(value)
+	object Gravity extends simx.core.ontology.SValDescription[javax.vecmath.Vector3f,simplex3d.math.floatx.ConstVec3f,simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.gravity.SymbolType](simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.gravity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Gravity") with simx.core.ontology.types.SemanticSValType[Gravity] {
+		override def apply(value: dataType): SemanticSValType = new Gravity(value, -1L, Nil)
+		override def apply(value: dataType, timestamp : scala.Long): SemanticSValType = new Gravity(value, timestamp, Nil)
+		override def apply(value: dataType, timestamp : scala.Long, history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) = new GravityWithHistory(value, timestamp, history)
 	}
-	class Gravity(private val _value : Gravity.dataType) extends SVal(_value, Gravity.valueDescription, Gravity)
+	class Gravity(private val _value : Gravity.dataType, private val _timestamp: scala.Long, private val _history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends simx.core.entity.description.SVal[javax.vecmath.Vector3f,simx.core.entity.typeconversion.TypeInfo[javax.vecmath.Vector3f,javax.vecmath.Vector3f],simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.gravity.SymbolType](_value, Gravity.valueDescription, Gravity, _timestamp, _history) {
+		def withHistory = new GravityWithHistory(value, timestamp, history)
+	}
+	class GravityWithHistory(_v: javax.vecmath.Vector3f, _t: scala.Long, _h: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends Gravity(_v,_t,_h) with SValHistory[javax.vecmath.Vector3f,simx.core.ontology.Symbols.gravity.SymbolType,Gravity] {
+		def newNonHistoryInstance(value: javax.vecmath.Vector3f) = Gravity(value)
+	}
 	
-	object HalfExtends extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.halfExtends definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#HalfExtends") {
-		override def apply(value: dataType) = new HalfExtends(value)
+	object HalfExtends extends simx.core.ontology.SValDescription[javax.vecmath.Vector3f,simplex3d.math.floatx.ConstVec3f,simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.halfExtends.SymbolType](simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.halfExtends definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#HalfExtends") with simx.core.ontology.types.SemanticSValType[HalfExtends] {
+		override def apply(value: dataType): SemanticSValType = new HalfExtends(value, -1L, Nil)
+		override def apply(value: dataType, timestamp : scala.Long): SemanticSValType = new HalfExtends(value, timestamp, Nil)
+		override def apply(value: dataType, timestamp : scala.Long, history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) = new HalfExtendsWithHistory(value, timestamp, history)
 	}
-	class HalfExtends(private val _value : HalfExtends.dataType) extends SVal(_value, HalfExtends.valueDescription, HalfExtends)
+	class HalfExtends(private val _value : HalfExtends.dataType, private val _timestamp: scala.Long, private val _history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends simx.core.entity.description.SVal[javax.vecmath.Vector3f,simx.core.entity.typeconversion.TypeInfo[javax.vecmath.Vector3f,javax.vecmath.Vector3f],simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.halfExtends.SymbolType](_value, HalfExtends.valueDescription, HalfExtends, _timestamp, _history) {
+		def withHistory = new HalfExtendsWithHistory(value, timestamp, history)
+	}
+	class HalfExtendsWithHistory(_v: javax.vecmath.Vector3f, _t: scala.Long, _h: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends HalfExtends(_v,_t,_h) with SValHistory[javax.vecmath.Vector3f,simx.core.ontology.Symbols.halfExtends.SymbolType,HalfExtends] {
+		def newNonHistoryInstance(value: javax.vecmath.Vector3f) = HalfExtends(value)
+	}
 	
-	object Impulse extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.impulse definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Impulse") {
-		override def apply(value: dataType) = new Impulse(value)
+	object Impulse extends simx.core.ontology.SValDescription[javax.vecmath.Vector3f,simplex3d.math.floatx.ConstVec3f,simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.impulse.SymbolType](simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.impulse definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Impulse") with simx.core.ontology.types.SemanticSValType[Impulse] {
+		override def apply(value: dataType): SemanticSValType = new Impulse(value, -1L, Nil)
+		override def apply(value: dataType, timestamp : scala.Long): SemanticSValType = new Impulse(value, timestamp, Nil)
+		override def apply(value: dataType, timestamp : scala.Long, history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) = new ImpulseWithHistory(value, timestamp, history)
 	}
-	class Impulse(private val _value : Impulse.dataType) extends SVal(_value, Impulse.valueDescription, Impulse)
+	class Impulse(private val _value : Impulse.dataType, private val _timestamp: scala.Long, private val _history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends simx.core.entity.description.SVal[javax.vecmath.Vector3f,simx.core.entity.typeconversion.TypeInfo[javax.vecmath.Vector3f,javax.vecmath.Vector3f],simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.impulse.SymbolType](_value, Impulse.valueDescription, Impulse, _timestamp, _history) {
+		def withHistory = new ImpulseWithHistory(value, timestamp, history)
+	}
+	class ImpulseWithHistory(_v: javax.vecmath.Vector3f, _t: scala.Long, _h: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends Impulse(_v,_t,_h) with SValHistory[javax.vecmath.Vector3f,simx.core.ontology.Symbols.impulse.SymbolType,Impulse] {
+		def newNonHistoryInstance(value: javax.vecmath.Vector3f) = Impulse(value)
+	}
 	
-	object Normal extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.normal definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Normal") {
-		override def apply(value: dataType) = new Normal(value)
+	object Normal extends simx.core.ontology.SValDescription[javax.vecmath.Vector3f,simplex3d.math.floatx.ConstVec3f,simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.normal.SymbolType](simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.normal definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Normal") with simx.core.ontology.types.SemanticSValType[Normal] {
+		override def apply(value: dataType): SemanticSValType = new Normal(value, -1L, Nil)
+		override def apply(value: dataType, timestamp : scala.Long): SemanticSValType = new Normal(value, timestamp, Nil)
+		override def apply(value: dataType, timestamp : scala.Long, history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) = new NormalWithHistory(value, timestamp, history)
 	}
-	class Normal(private val _value : Normal.dataType) extends SVal(_value, Normal.valueDescription, Normal)
+	class Normal(private val _value : Normal.dataType, private val _timestamp: scala.Long, private val _history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends simx.core.entity.description.SVal[javax.vecmath.Vector3f,simx.core.entity.typeconversion.TypeInfo[javax.vecmath.Vector3f,javax.vecmath.Vector3f],simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.normal.SymbolType](_value, Normal.valueDescription, Normal, _timestamp, _history) {
+		def withHistory = new NormalWithHistory(value, timestamp, history)
+	}
+	class NormalWithHistory(_v: javax.vecmath.Vector3f, _t: scala.Long, _h: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends Normal(_v,_t,_h) with SValHistory[javax.vecmath.Vector3f,simx.core.ontology.Symbols.normal.SymbolType,Normal] {
+		def newNonHistoryInstance(value: javax.vecmath.Vector3f) = Normal(value)
+	}
 	
-	object Transformation extends simx.core.ontology.SValDescription(simx.core.ontology.types.Transformation as simx.core.ontology.Symbols.transformation withType classOf[com.bulletphysics.linearmath.Transform] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Transformation") {
-		override def apply(value: dataType) = new Transformation(value)
+	object Transformation extends simx.core.ontology.SValDescription[com.bulletphysics.linearmath.Transform,simplex3d.math.floatx.ConstMat4f,simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.matrix.SymbolType],simx.core.ontology.Symbols.transformation.SymbolType],simx.core.ontology.Symbols.transformation.SymbolType](simx.core.ontology.types.Transformation as simx.core.ontology.Symbols.transformation withType classOf[com.bulletphysics.linearmath.Transform] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Transformation") with simx.core.ontology.types.SemanticSValType[Transformation] {
+		override def apply(value: dataType): SemanticSValType = new Transformation(value, -1L, Nil)
+		override def apply(value: dataType, timestamp : scala.Long): SemanticSValType = new Transformation(value, timestamp, Nil)
+		override def apply(value: dataType, timestamp : scala.Long, history: simx.core.entity.description.HistoryStorage.HistoryType[com.bulletphysics.linearmath.Transform]) = new TransformationWithHistory(value, timestamp, history)
 	}
-	class Transformation(private val _value : Transformation.dataType) extends SVal(_value, Transformation.valueDescription, Transformation)
+	class Transformation(private val _value : Transformation.dataType, private val _timestamp: scala.Long, private val _history: simx.core.entity.description.HistoryStorage.HistoryType[com.bulletphysics.linearmath.Transform]) extends simx.core.entity.description.SVal[com.bulletphysics.linearmath.Transform,simx.core.entity.typeconversion.TypeInfo[com.bulletphysics.linearmath.Transform,com.bulletphysics.linearmath.Transform],simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.matrix.SymbolType],simx.core.ontology.Symbols.transformation.SymbolType],simx.core.ontology.Symbols.transformation.SymbolType](_value, Transformation.valueDescription, Transformation, _timestamp, _history) {
+		def withHistory = new TransformationWithHistory(value, timestamp, history)
+	}
+	class TransformationWithHistory(_v: com.bulletphysics.linearmath.Transform, _t: scala.Long, _h: simx.core.entity.description.HistoryStorage.HistoryType[com.bulletphysics.linearmath.Transform]) extends Transformation(_v,_t,_h) with SValHistory[com.bulletphysics.linearmath.Transform,simx.core.ontology.Symbols.transformation.SymbolType,Transformation] {
+		def newNonHistoryInstance(value: com.bulletphysics.linearmath.Transform) = Transformation(value)
+	}
 	
-	object Vector3 extends simx.core.ontology.SValDescription(simx.core.ontology.types.Vector3 as simx.core.ontology.Symbols.vector3 withType classOf[javax.vecmath.Vector3f] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Vector3") {
-		override def apply(value: dataType) = new Vector3(value)
+	object Vector3 extends simx.core.ontology.SValDescription[javax.vecmath.Vector3f,simplex3d.math.floatx.ConstVec3f,simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType](simx.core.ontology.types.Vector3 as simx.core.ontology.Symbols.vector3 withType classOf[javax.vecmath.Vector3f] definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Vector3") with simx.core.ontology.types.SemanticSValType[Vector3] {
+		override def apply(value: dataType): SemanticSValType = new Vector3(value, -1L, Nil)
+		override def apply(value: dataType, timestamp : scala.Long): SemanticSValType = new Vector3(value, timestamp, Nil)
+		override def apply(value: dataType, timestamp : scala.Long, history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) = new Vector3WithHistory(value, timestamp, history)
 	}
-	class Vector3(private val _value : Vector3.dataType) extends SVal(_value, Vector3.valueDescription, Vector3)
-	object Velocity extends simx.core.ontology.SValDescription(simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.velocity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Velocity") {
-		override def apply(value: dataType) = new Velocity(value)
+	class Vector3(private val _value : Vector3.dataType, private val _timestamp: scala.Long, private val _history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends simx.core.entity.description.SVal[javax.vecmath.Vector3f,simx.core.entity.typeconversion.TypeInfo[javax.vecmath.Vector3f,javax.vecmath.Vector3f],simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType](_value, Vector3.valueDescription, Vector3, _timestamp, _history) {
+		def withHistory = new Vector3WithHistory(value, timestamp, history)
 	}
-	class Velocity(private val _value : Velocity.dataType) extends SVal(_value, Velocity.valueDescription, Velocity)
+	class Vector3WithHistory(_v: javax.vecmath.Vector3f, _t: scala.Long, _h: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends Vector3(_v,_t,_h) with SValHistory[javax.vecmath.Vector3f,simx.core.ontology.Symbols.vector3.SymbolType,Vector3] {
+		def newNonHistoryInstance(value: javax.vecmath.Vector3f) = Vector3(value)
+	}
+	object Velocity extends simx.core.ontology.SValDescription[javax.vecmath.Vector3f,simplex3d.math.floatx.ConstVec3f,simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.velocity.SymbolType](simx.components.physics.jbullet.ontology.types.Vector3 as simx.core.ontology.Symbols.velocity definedAt "http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Velocity") with simx.core.ontology.types.SemanticSValType[Velocity] {
+		override def apply(value: dataType): SemanticSValType = new Velocity(value, -1L, Nil)
+		override def apply(value: dataType, timestamp : scala.Long): SemanticSValType = new Velocity(value, timestamp, Nil)
+		override def apply(value: dataType, timestamp : scala.Long, history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) = new VelocityWithHistory(value, timestamp, history)
+	}
+	class Velocity(private val _value : Velocity.dataType, private val _timestamp: scala.Long, private val _history: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends simx.core.entity.description.SVal[javax.vecmath.Vector3f,simx.core.entity.typeconversion.TypeInfo[javax.vecmath.Vector3f,javax.vecmath.Vector3f],simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.ValueDescription[simx.core.svaractor.semantictrait.base.Base,simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.vector3.SymbolType],simx.core.ontology.Symbols.velocity.SymbolType](_value, Velocity.valueDescription, Velocity, _timestamp, _history) {
+		def withHistory = new VelocityWithHistory(value, timestamp, history)
+	}
+	class VelocityWithHistory(_v: javax.vecmath.Vector3f, _t: scala.Long, _h: simx.core.entity.description.HistoryStorage.HistoryType[javax.vecmath.Vector3f]) extends Velocity(_v,_t,_h) with SValHistory[javax.vecmath.Vector3f,simx.core.ontology.Symbols.velocity.SymbolType,Velocity] {
+		def newNonHistoryInstance(value: javax.vecmath.Vector3f) = Velocity(value)
+	}
 }

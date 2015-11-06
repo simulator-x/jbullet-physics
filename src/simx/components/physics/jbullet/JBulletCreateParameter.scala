@@ -22,7 +22,7 @@ package simx.components.physics.jbullet
 
 import simx.core.components.physics.PhysicsAspect
 import simx.core.ontology.Symbols
-import simx.core.entity.description.SValSeq
+import simx.core.entity.description.{SValSet}
 import simplex3d.math.floatx.ConstVec3f
 
 //Global Types
@@ -51,9 +51,9 @@ case class JBulletCreateParameter(simulationSpeed: Either[Float, Null] = null, g
     getFeatures
 
   def getCreateParams = addCVars {
-    val result = new SValSeq
-    if(simulationSpeed.isLeft) result and gt.SimulationSpeed(simulationSpeed.left.get)
-    if(gravity != null) result and gt.Gravity(gravity)
+    val result = new SValSet
+    if(simulationSpeed.isLeft) result += gt.SimulationSpeed(simulationSpeed.left.get)
+    if(gravity != null) result += gt.Gravity(gravity)
     result
   }
 }

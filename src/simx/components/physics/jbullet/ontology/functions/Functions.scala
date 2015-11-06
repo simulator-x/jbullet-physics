@@ -8,6 +8,6 @@ package simx.components.physics.jbullet.ontology.functions
 import simx.components.physics.jbullet.ontology.types._
 import simx.core.ontology.types._
 
-trait Functions{
+trait Functions {
 
 }

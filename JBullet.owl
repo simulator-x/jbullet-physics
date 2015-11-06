@@ -1,0 +1,320 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE Ontology [
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY xml "http://www.w3.org/XML/1998/namespace" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<Ontology xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/JBullet/JBullet.owl"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     ontologyIRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/JBullet/JBullet.owl"
+     versionIRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/JBullet/JBullet20130213.owl">
+    <Prefix name="" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
+    <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+    <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
+    <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
+    <Import>http://localhost:8080/components/physics/SimxPhysics.owl</Import>
+    <Declaration>
+        <Class IRI="#JBullet"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxJBullet_AccelerationDesc"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxJBullet_GravityDesc"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxJBullet_ImpulseDesc"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxJBullet_NormalDesc"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxJBullet_TransformationDesc"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxJBullet_VelocityDesc"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#SimxJbullet_HalfExtendsDesc"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#com.bulletphysics.linearmath.Transform"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#javax.vecmath.Vector3f"/>
+    </Declaration>
+    <SubClassOf>
+        <Class IRI="#JBullet"/>
+        <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#PhysicsComponent"/>
+    </SubClassOf>
+    <ClassAssertion>
+        <Class IRI="#JBullet"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#describesProperty"/>
+            <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Acceleration"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#SimxJBullet_AccelerationDesc"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#describesProperty"/>
+            <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Gravity"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#SimxJBullet_GravityDesc"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#describesProperty"/>
+            <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Impulse"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#SimxJBullet_ImpulseDesc"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#describesProperty"/>
+            <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Normal"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#SimxJBullet_NormalDesc"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#describesProperty"/>
+            <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Transformation"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#SimxJBullet_TransformationDesc"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#describesProperty"/>
+            <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#Vector3"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#describesProperty"/>
+            <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#Velocity"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#SimxJBullet_VelocityDesc"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#describesProperty"/>
+            <Class IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicTypes.owl#HalfExtends"/>
+        </ObjectSomeValuesFrom>
+        <NamedIndividual IRI="#SimxJbullet_HalfExtendsDesc"/>
+    </ClassAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">0f</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#SirisPhysics_AngularDampingDescription"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">1f</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#SirisCore_MassDescription"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">1f</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#SirisCore_RadiusDescription"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">0f</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/components/physics/SimxPhysics.owl#SirisPhysics_RestitutionDescription"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">simplex3d.math.floatx.Vec3f.Zero</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="#SimxJBullet_VelocityDesc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">simplex3d.math.floatx.Mat4f.Identity</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="#SimxJBullet_TransformationDesc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">simplex3d.math.floatx.Vec3f.Zero</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="#SimxJBullet_GravityDesc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">1f</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#SirisCore_AngularFactorDescription"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <Annotation>
+            <AnnotationProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDefaultValue"/>
+            <Literal datatypeIRI="&xsd;string">simplex3d.math.floatx.Vec3f.Zero</Literal>
+        </Annotation>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#providesProperty"/>
+        <NamedIndividual IRI="#SimXJBullet_PhysSphereAspectDescription"/>
+        <NamedIndividual IRI="#SimxJBullet_AccelerationDesc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+        <NamedIndividual IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#SirisCore_ComponentDescription"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxJBullet_AccelerationDesc"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimxJBullet_AccelerationDesc"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxJBullet_GravityDesc"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimxJBullet_GravityDesc"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxJBullet_ImpulseDesc"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimxJBullet_ImpulseDesc"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxJBullet_NormalDesc"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimxJBullet_NormalDesc"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxJBullet_TransformationDesc"/>
+        <NamedIndividual IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#SirisCore_TransformationDescription"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimxJBullet_TransformationDesc"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDataType"/>
+        <NamedIndividual IRI="#SimxJBullet_TransformationDesc"/>
+        <NamedIndividual IRI="#com.bulletphysics.linearmath.Transform"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+        <NamedIndividual IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/concepts/BasicDescriptions.owl#SirisCore_Vector3Description"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#hasDataType"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+        <NamedIndividual IRI="#javax.vecmath.Vector3f"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxJBullet_VelocityDesc"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimxJBullet_VelocityDesc"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#basedOn"/>
+        <NamedIndividual IRI="#SimxJbullet_HalfExtendsDesc"/>
+        <NamedIndividual IRI="#SimxJBullet_Vector3Desc"/>
+    </ObjectPropertyAssertion>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#forComponent"/>
+        <NamedIndividual IRI="#SimxJbullet_HalfExtendsDesc"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+    </ObjectPropertyAssertion>
+    <DataPropertyAssertion>
+        <DataProperty IRI="http://www.hci.uni-wuerzburg.de/ontologies/simx/SimxCoreOntology.owl#inPackage"/>
+        <NamedIndividual IRI="#SimxComponent_JBullet"/>
+        <Literal datatypeIRI="&xsd;string">simx.components.physics.jbullet</Literal>
+    </DataPropertyAssertion>
+</Ontology>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+
