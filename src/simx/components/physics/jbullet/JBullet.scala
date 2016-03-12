@@ -390,7 +390,13 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
       }
   }
 
-  private val observedCollisions = mutable.Set[(CollisionObject, CollisionObject)]()
+  case class CollisionContext(
+    a: CollisionObject,
+    b: CollisionObject,
+    positionWorldOnA: Vector3f,
+    positionWorldOnB: Vector3f)
+
+  private val observedCollisions = mutable.Set[CollisionContext]()
 
   /**
    *  Used to react on collisions.
@@ -407,8 +413,13 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
           if (pt.getDistance < 0.0f) {
             val rbA = contactManifold.getBody0.asInstanceOf[CollisionObject]
             val rbB = contactManifold.getBody1.asInstanceOf[CollisionObject]
-            if(rbA.isActive || rbB.isActive)
-              observedCollisions.add(rbA -> rbB)
+            if(rbA.isActive || rbB.isActive) {
+              val positionWorldOnA = new Vector3f()
+              val positionWorldOnB = new Vector3f()
+              pt.getPositionWorldOnA(positionWorldOnA)
+              pt.getPositionWorldOnB(positionWorldOnB)
+              observedCollisions.add(CollisionContext(rbA, rbB, positionWorldOnA, positionWorldOnB))
+            }
           }
         }
       }
@@ -419,10 +430,13 @@ class JBulletComponent( override val componentName : Symbol = JBullet.getCompone
    *  The reaction on all collisions.
    */
   private def handleCollisions(){
-    observedCollisions.foreach{ collisionTuple =>
-      rigidBodyMap.get(JBulletRigidBody.upcast(collisionTuple._1)).collect{
-        case entity1 => rigidBodyMap.get(JBulletRigidBody.upcast(collisionTuple._2)).collect{
-          case entity2 => PhysicsEvents.collision.emit(Set(entity1, entity2))
+    observedCollisions.foreach{ collisionCtx =>
+      rigidBodyMap.get(JBulletRigidBody.upcast(collisionCtx.a)).collect{
+        case entity1 => rigidBodyMap.get(JBulletRigidBody.upcast(collisionCtx.b)).collect{
+          case entity2 =>
+            val pA = JBulletConverters.vectorConverter.convert(collisionCtx.positionWorldOnA)
+            val pB = JBulletConverters.vectorConverter.convert(collisionCtx.positionWorldOnB)
+            PhysicsEvents.collision.emit(Set(entity1, entity2), gt.Position(pA), gt.Position(pB))
         }
       }
     }
